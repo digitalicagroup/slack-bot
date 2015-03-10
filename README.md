@@ -39,6 +39,8 @@ How does it work?
 
 ### On your web server
 
+TODO: Not yet on composer!!
+
 Install [composer](http://getcomposer.org/download/) in a folder of your preference (should be accessible from your web server) then run:
 ```bash
 $ php composer.phar require digitalicagroup/slack-bot:~0.1
