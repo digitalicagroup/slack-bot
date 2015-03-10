@@ -1,0 +1,7 @@
+# .gitignore
+/vendor/
+/logs/*.txt
+index-dev.php
+/.settings/*
+/.buildpath
+/.project
