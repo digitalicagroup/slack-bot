@@ -1,6 +1,6 @@
-# Redmine Command
+# Slack Bot
 
-A simple Redmine slack integration to manage issues.
+A simple testing bot for slack. We are currently testing a parsing facility / framework that could be extended to make a general utility bot for slack
 
 Uses
 * One Slack "Slash Commands" and one "Incoming WebHooks" integration (see Install).
@@ -9,7 +9,6 @@ Uses
 How does it work?
 * It installs as a PHP application on your web server (using composer).
 * Through a "Slash Commands" Slack integration, it receives requests.
-* It communicates with your redmine installation to gather (or update) data.
 * Posts the results to an "Incoming WebHooks" Slack integration in the originator's channel or private group (yeah, private group!).
 
 ## Current Features
