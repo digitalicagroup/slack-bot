@@ -2,17 +2,9 @@
 
 namespace Bot;
 
-use Redmine\Client;
-
 /**
- * Class to handle "show" commands.
- * This command will receive an array of issue numbers, will
- * gather information from a redmine project, and store its
- * results on the in the internal result attribute of
- * AbstractCommand.
- * Each issue is stored as slack attachment
- * (\Bot\SlackResultAttachment) . Unknown issues will
- * be attached at the end.
+ * Command to find trade classifications for 
+ * Marc Miller's Traveller T4 RPG.
  *
  * @author Luis Augusto PeÃ±a Pereira <lpenap at gmail dot com>
  *        

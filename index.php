@@ -2,6 +2,7 @@
 require_once 'vendor/autoload.php';
 
 use Psr\Log\LogLevel;
+use SlackHookConfiguration\Configuration;
 
 /**
  * This is the entry point for your redmine-command slack integration.
@@ -10,7 +11,7 @@ use Psr\Log\LogLevel;
  * This file should be placed at the same level of your "vendor" folder.
  */
 
-$config = new RedmineCommand\Configuration ();
+$config = new SlackHookFramework\Configuration ();
 
 /**
  * token sent by slack (from your "Slash Commands" integration).
@@ -28,16 +29,6 @@ $config->slack_webhook_url = "https://hooks.slack.com/services/LKJDFKLJFD/DFDFSF
 $config->slack_api_token = "xoxp-98475983759834-38475984579843-34985793845";
 
 /**
- * Base URL of redmine installation.
- */
-$config->redmine_url = "https://your/redmine/install";
-
-/**
- * Redmine API key.
- */
-$config->redmine_api_key = "0d089u4sldkfjfljlksdjffj43099034j";
-
-/**
  * Log level threshold.
  * The default is DEBUG.
  * If you are done testing or installing in production environment,
@@ -48,26 +39,26 @@ $config->redmine_api_key = "0d089u4sldkfjfljlksdjffj43099034j";
 /**
  * logs folder, make sure the invoker have write permission.
  */
-$config->log_dir = "/srv/api/redmine-command/logs";
+$config->log_dir = "/srv/api/slack-bot/logs";
 
 /**
  * Database folder, used by some commands to store user related temporal information.
  * Make sure the invoker have write permission.
  */
-$config->db_dir = "/srv/api/redmine-command/db";
+$config->db_dir = "/srv/api/slack-bot/db";
 
 /**
  * This is to prevent redmine-command entry point to be called outside slack.
  * If you want it to be called from anywhere, comment the following 3 lines:
  */
 
-if (! RedmineCommand\Validator::validate ( $_POST, $config )) {
+if (! SlackHookFramework\Validator::validate ( $_POST, $config )) {
 	die ();
 }
 
 /**
  * Entry point execution.
  */
-$command = RedmineCommand\CommandFactory::create ( $_POST, $config );
+$command = SlackHookFramework\CommandFactory::create ( $_POST, $config );
 $command->execute ();
 $command->post ();
