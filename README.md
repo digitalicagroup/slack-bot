@@ -1,6 +1,6 @@
 # Slack Bot
 
-A simple bot for Slack. It an be use as a starting point to build your own Slack Bot. This project is also a testing facility for the [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework).
+A simple bot for Slack. It an be used as a starting point to build your own Slack Bot. This project is also a testing facility for the [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework).
 
 Uses
 * One Slack "Slash Commands" and one "Incoming WebHooks" integration (see Install).
@@ -8,7 +8,7 @@ Uses
 * [KLogger](https://github.com/katzgrau/KLogger)
 
 How does it work?
-* It installs as a PHP application on your web server (using composer).
+* It installs as a PHP application on your web server.
 * Through a "Slash Commands" Slack integration, it receives requests.
 * Posts the results to an "Incoming WebHooks" Slack integration in the originator's channel or private group (yeah, private group!).
 
