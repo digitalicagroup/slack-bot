@@ -7,7 +7,7 @@
         "php": ">=5.4",
         "ext-curl": "*",
         "katzgrau/klogger": "1.0.*",
-        "digitalicagroup/slack-hook-framework": "~0.1a"
+        "digitalicagroup/slack-hook-framework": "~0.1"
     },
     "license": "GPL-3.0+",
     "authors": [

@@ -41,12 +41,16 @@ How does it work?
 
 ### On your web server
 
-Install [composer](http://getcomposer.org/download/) in a folder of your preference (should be accessible from your web server) then run:
+Go to you public folder and clone this repository:
 ```bash
-$ php composer.phar require digitalicagroup/slack-bot:~0.1
-$ cp vendor/digitalicagroup/slack-bot/index.php .
+$ git clone https://github.com/digitalicagroup/slack-bot.git
+$ cd slack-bot
 ```
-The last line copies index.php from the package with the configuration you need to modify.
+
+Install [composer](http://getcomposer.org/download/) inside slack-bot dir and then run:
+```bash
+$ php composer.phar update
+```
 
 Edit index.php and add the following configuration parameters:
 ```php
@@ -78,7 +82,13 @@ $config->slack_api_token =    "xoxp-98475983759834-38475984579843-34985793845";
 $config->log_dir =            "/srv/api/slack-bot/logs";
 ```
 
-Make sure you give write permissions to the log_dir folder.
+Give permissions to your logs/ and db/ folder to your web server process. If you are using apache under linux, it is usually www-data:
+```bash
+$ sudo chown -R :www-data logs/
+$ sudo chown -R :www-data db/
+$ sudo chmod g+w logs/
+$ sudo chmod g+w db/
+```
 
 ## Troubleshooting
 
@@ -96,8 +106,145 @@ This is a list of common errors:
 * I just developed a new command but I am getting a class not found error on CommandFactory.
  * Every time you add a new command (hence a new class), you must update the composer autoloader. just type:
  * php composer.phar update  
+* If you have any bug or error to report, feel free to contact me:  luis at digitalicagroup.com
 
-## Contribute
+## Adding more Commands.
+
+If You wish to add more commands, you can do so with the following (basic) steps:
+Inside slack-bot install dir, go to the lib dir:
+```bash
+$ cd lib/Bot/
+```
+
+Create a new php file for your new command, for example CmdPing.php:
+```php
+<?php
+
+namespace Bot;
+
+use SlackHookFramework\AbstractCommand;
+use SlackHookFramework\SlackResult;
+use SlackHookFramework\SlackResultAttachment;
+use SlackHookFramework\SlackResultAttachmentField;
+
+class CmdPing extends AbstractCommand {
+	
+	/**
+	 * Factory method to be implemented from \SlackHookFramework\AbstractCommand .
+	 * Must return an instance of \SlackHookFramework\SlackResult .
+	 *
+	 * Basically, the method returns an instance of SlackResult.
+	 * Inside a single instance of SlackResult, several
+	 * SlackResultAttachment instances can be stored.
+	 * Inside a SlackResultAttachment instance, several
+	 * SlackResultAttachmentField instances can be stored.
+	 * The result is then formating according to the Slack
+	 * formating guide.
+	 *
+	 * So you must process your command here, and then
+	 * prepare your SlackResult instance.
+	 */
+	protected function executeImpl() {
+		/**
+		 * Get a reference to the log.
+		 */
+		$log = $this->log;
+		
+		/**
+		 * Create a new instance to store results.
+		 */
+		$result = new SlackResult ();
+		
+		/**
+		 * Output some debug info to log file.
+		 */
+		$log->debug ( "CmdPing: Parameters received: " . implode ( ",", $this->cmd ) );
+		
+		/**
+		 * Preparing the result text and validating parameters.
+		 */
+		$resultText = "[requested by " . $this->post ["user_name"] . "]";
+		if (empty ( $this->cmd )) {
+			$resultText .= " You must specify at least one parameter!";
+		} else {
+			$resultText .= " CmdPing Result: ";
+		}
+		
+		/**
+		 * Preparing attachments.
+		 */
+		$attachments = array ();
+		
+		/**
+		 * Cycling through parameters, just for fun.
+		 */
+		foreach ( $this->cmd as $param ) {
+			$log->debug ( "CmdPing: processing parameter $param" );
+			
+			/**
+			 * Preparing one result attachment for processing this parameter.
+			 */
+			$attachment = new SlackResultAttachment ();
+			$attachment->setTitle ( "Processing $param" );
+			$attachment->setText ( "Ping $param !!" );
+			$attachment->setFallback ( "fallback text." );
+			/**
+			 * Optional pretext
+			 */
+			$attachment->setPretext ( "pretext here." );
+			
+			/**
+			 * Adding some fields to the attachment.
+			 */
+			$fields = array ();
+			$fields [] = SlackResultAttachmentField::withAttributes ( "Field 1", "Value" );
+			$fields [] = SlackResultAttachmentField::withAttributes ( "Field 2", "Value" );
+			$fields [] = SlackResultAttachmentField::withAttributes ( "This is a long field", "this is a long Value", FALSE );
+			$attachment->setFieldsArray ( $fields );
+			
+			/**
+			 * Adding the attachment to the attachments array.
+			 */
+			$attachments [] = $attachment;
+		}
+		
+		$result->setText ( $resultText );
+		$result->setAttachmentsArray ( $attachments );
+		return $result;
+	}
+}
+```
+
+Now go to the folder vendor/digitalicagroup/slack-hook-framework/lib/SlackHookFramework and edit the commands_definition.json file and add a command definition for CmdPing:
+```json
+{
+	"commands": [
+		{
+			"trigger": "ping",
+			"class": "Bot\\CmdPing",
+			"help_title": "ping <1 2 ...>",
+			"help_text": "example command."
+		},
+		{
+ 			"trigger": "hello",
+ 			"class": "SlackHookFramework\\CmdHello",
+			"help_title": "hello",
+			"help_text": "Shows how to use the slack-hook-framework"
+		},
+		{
+			"trigger": "help",
+			"class": "SlackHookFramework\\CmdHelp",
+			"help_title": "help",
+			"help_text": "Shows this help."
+		}
+	]
+}
+```
+
+Go to the slack-bot install dir and run:
+```bash
+$ php composer.phar update
+```
 
 ## About Digitalica
 
