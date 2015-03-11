@@ -2,6 +2,11 @@
 
 namespace Bot;
 
+use SlackHookFramework\AbstractCommand;
+use SlackHookFramework\SlackResult;
+use SlackHookFramework\SlackResultAttachment;
+use SlackHookFramework\SlackResultAttachmentField;
+
 /**
  * Command to find trade classifications for 
  * Marc Miller's Traveller T4 RPG.
