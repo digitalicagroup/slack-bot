@@ -1,9 +1,10 @@
 # Slack Bot
 
-A simple testing bot for slack. We are currently testing a parsing facility / framework that could be extended to make a general utility bot for slack
+A simple bot for Slack. It an be use as a starting point to build your own Slack Bot. This project is also a testing facility for the [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework).
 
 Uses
 * One Slack "Slash Commands" and one "Incoming WebHooks" integration (see Install).
+* [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework)
 * [KLogger](https://github.com/katzgrau/KLogger)
 
 How does it work?
@@ -12,8 +13,9 @@ How does it work?
 * Posts the results to an "Incoming WebHooks" Slack integration in the originator's channel or private group (yeah, private group!).
 
 ## Current Features
-
-## TODO
+* Commands supported:
+ * All slack-hook-framework commands.
+ * trade: Get trade classifications for Marc Miller's Traveller T4 RPG
 
 ## Requirements
 
@@ -38,8 +40,6 @@ How does it work?
 * Go to [Slack API](https://api.slack.com/) and copy the authentication token for your team.
 
 ### On your web server
-
-TODO: Not yet on composer!!
 
 Install [composer](http://getcomposer.org/download/) in a folder of your preference (should be accessible from your web server) then run:
 ```bash
