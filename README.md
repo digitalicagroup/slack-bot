@@ -85,13 +85,13 @@ $config->log_dir =            "/srv/api/slack-bot/logs";
  * Database folder, used by some commands to store user related temporal information.
  * Make sure the invoker have write permission.
  */
-$config->db_dir = "/srv/api/slack-hook-framework/db";
+$config->db_dir = "/srv/api/slack-bot/db";
 
 /**
  * Custom commands definition. Use this file if you wish to add new commands to be
  * recognized by the framework.
  */
-$config->custom_cmds = "/srv/api/slack-hook-framework/custom_cmds.json";
+$config->custom_cmds = "/srv/api/slack-bot/custom_cmds.json";
 ```
 
 Give permissions to your logs/ and db/ folder to your web server process. If you are using apache under linux, it is usually www-data:
@@ -123,9 +123,8 @@ This is a list of common errors:
 ## Adding more Commands.
 
 If You wish to add more commands, you can do so with the following (basic) steps:
-Inside slack-bot install dir, copy the custom_cmds.json from slack-hook-framework:
+Inside slack-bot install dir, go to the Bot folder:
 ```bash
-$ cp vendor/digitalicagroup/slack-hook-framework/custom_cmds.json .
 $ cd lib/Bot/
 ```
 

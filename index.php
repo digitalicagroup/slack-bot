@@ -48,6 +48,18 @@ $config->log_dir = "/srv/api/slack-bot/logs";
 $config->db_dir = "/srv/api/slack-bot/db";
 
 /**
+ * Database folder, used by some commands to store user related temporal information.
+ * Make sure the invoker(*) have write permission.
+ */
+$config->db_dir = "/srv/api/slack-bot/db";
+
+/**
+ * Custom commands definition. Use this file if you wish to add new commands to be
+ * recognized by the framework.
+ */
+$config->custom_cmds = "/srv/api/slack-bot/custom_cmds.json";
+
+/**
  * This is to prevent redmine-command entry point to be called outside slack.
  * If you want it to be called from anywhere, comment the following 3 lines:
  */
