@@ -80,6 +80,18 @@ $config->slack_api_token =    "xoxp-98475983759834-38475984579843-34985793845";
  * logs folder, make sure the invoker have write permission.
  */
 $config->log_dir =            "/srv/api/slack-bot/logs";
+
+/**
+ * Database folder, used by some commands to store user related temporal information.
+ * Make sure the invoker have write permission.
+ */
+$config->db_dir = "/srv/api/slack-hook-framework/db";
+
+/**
+ * Custom commands definition. Use this file if you wish to add new commands to be
+ * recognized by the framework.
+ */
+$config->custom_cmds = "/srv/api/slack-hook-framework/custom_cmds.json";
 ```
 
 Give permissions to your logs/ and db/ folder to your web server process. If you are using apache under linux, it is usually www-data:
@@ -111,8 +123,9 @@ This is a list of common errors:
 ## Adding more Commands.
 
 If You wish to add more commands, you can do so with the following (basic) steps:
-Inside slack-bot install dir, go to the lib dir:
+Inside slack-bot install dir, copy the custom_cmds.json from slack-hook-framework:
 ```bash
+$ cp vendor/digitalicagroup/slack-hook-framework/custom_cmds.json .
 $ cd lib/Bot/
 ```
 
@@ -215,7 +228,7 @@ class CmdPing extends AbstractCommand {
 }
 ```
 
-Now go to the folder vendor/digitalicagroup/slack-hook-framework/lib/SlackHookFramework and edit the commands_definition.json file and add a command definition for CmdPing:
+Now go to slack-bot's install folder and edit the custom_cmds.json file and add a command definition for CmdPing:
 ```json
 {
 	"commands": [
@@ -225,18 +238,7 @@ Now go to the folder vendor/digitalicagroup/slack-hook-framework/lib/SlackHookFr
 			"help_title": "ping <1 2 ...>",
 			"help_text": "example command."
 		},
-		{
- 			"trigger": "hello",
- 			"class": "SlackHookFramework\\CmdHello",
-			"help_title": "hello",
-			"help_text": "Shows how to use the slack-hook-framework"
-		},
-		{
-			"trigger": "help",
-			"class": "SlackHookFramework\\CmdHelp",
-			"help_title": "help",
-			"help_text": "Shows this help."
-		}
+     . . .
 	]
 }
 ```
