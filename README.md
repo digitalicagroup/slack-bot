@@ -247,6 +247,10 @@ Go to the slack-bot install dir and run:
 $ php composer.phar update
 ```
 
+## Feedback
+
+Feel free to reach us at: contact at digitalicagroup dot com .
+
 ## About Digitalica
 
 We are a small firm focusing on mobile apps development (iOS, Android) and we are passionate about new technologies and ways that helps us work better.
