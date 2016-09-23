@@ -6,8 +6,7 @@
     "require": {
         "php": ">=5.4",
         "ext-curl": "*",
-        "katzgrau/klogger": "1.0.*",
-        "digitalicagroup/slack-hook-framework": "~0.1"
+        "katzgrau/klogger": "1.0.*"
     },
     "license": "GPL-3.0+",
     "authors": [
@@ -21,5 +20,8 @@
         "Bot\\": "lib/"
       },
       "classmap": ["lib/"]
+    },
+    "require-dev": {
+        "digitalicagroup/slack-hook-framework": "dev-unstable"
     }
 }

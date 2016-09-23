@@ -1,53 +1,12 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a974b1c989ea2559374ffeefdcdbed24",
+    "hash": "32128c8db9c358e285b43fce8e321b70",
+    "content-hash": "3163d126feb90dd334114d7759c965c8",
     "packages": [
-        {
-            "name": "digitalicagroup/slack-hook-framework",
-            "version": "v0.1a",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/digitalicagroup/slack-hook-framework.git",
-                "reference": "e9d3f45637f813c77cc3c914f3dfc56ca77126e2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/digitalicagroup/slack-hook-framework/zipball/e9d3f45637f813c77cc3c914f3dfc56ca77126e2",
-                "reference": "e9d3f45637f813c77cc3c914f3dfc56ca77126e2",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "katzgrau/klogger": "1.0.*",
-                "php": ">=5.4"
-            },
-            "type": "project",
-            "autoload": {
-                "psr-4": {
-                    "SlackHookFramework\\": "lib/"
-                },
-                "classmap": [
-                    "lib/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Luis Augusto Peña Pereira",
-                    "email": "luis@digitalicagroup.com"
-                }
-            ],
-            "description": "Framework to easily create your own command processor for Slack",
-            "homepage": "https://github.com/digitalicagroup/slack-hook-framework",
-            "time": "2015-03-11 16:06:20"
-        },
         {
             "name": "katzgrau/klogger",
             "version": "1.0.0",
@@ -139,11 +98,54 @@
             "time": "2012-12-21 11:40:51"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "digitalicagroup/slack-hook-framework",
+            "version": "dev-unstable",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/digitalicagroup/slack-hook-framework.git",
+                "reference": "f7bfcc5f3cc9bbaf9bbe4001f49e4f33a5d6ce34"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/digitalicagroup/slack-hook-framework/zipball/f7bfcc5f3cc9bbaf9bbe4001f49e4f33a5d6ce34",
+                "reference": "f7bfcc5f3cc9bbaf9bbe4001f49e4f33a5d6ce34",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "katzgrau/klogger": "1.0.*",
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SlackHookFramework\\": "lib/"
+                },
+                "classmap": [
+                    "lib/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Luis Augusto Peña Pereira",
+                    "email": "luis@digitalicagroup.com"
+                }
+            ],
+            "description": "Framework to easily create your own command processor for Slack",
+            "homepage": "https://github.com/digitalicagroup/slack-hook-framework",
+            "time": "2016-09-23 13:36:50"
+        }
+    ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "digitalicagroup/slack-hook-framework": 15
+        "digitalicagroup/slack-hook-framework": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
