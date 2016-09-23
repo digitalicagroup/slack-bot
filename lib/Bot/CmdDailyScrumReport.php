@@ -36,51 +36,18 @@ class CmdDailyScrumReport extends AbstractCommand {
 	 * @return \SlackHookFramework\SlackResult
 	 */
 	protected function executeImpl() {
-		/**
-		 * Get a reference to the log.
-		 */
 		$log = $this->log;
-		
-		/**
-		 * Output some debug info to log file.
-		 */
 		$log->debug ( "CmdDailyScrumReport: Parameters received: " . implode ( ",", $this->cmd ) );
 		
-		/**
-		 * Preparing the result text and validating parameters.
-		 */
-		$resultText = $this->post ["user_name"] . " daily summary for " . date ( 'l jS \of F Y h:i:s A' ) . "]";
-		if (empty ( $this->cmd )) {
-			$resultText .= " Usage: /<command> daily <what have i done>;<what i will be doing>[;<my current blocks>]";
-		}
-		
-		/**
-		 * Preparing attachments.
-		 */
-		$attachments = array ();
-		
-		/**
-		 * Cycling through parameters, just for fun.
-		 */
-		foreach ( $this->cmd as $param ) {
-			$log->debug ( "CmdDailyScrumReport: processing parameter $param" );
-			
-			/**
-			 * Preparing one result attachment for processing this parameter.
-			 */
+		$resultText = "*" . $this->post ["user_name"] . "* daily summary for " . date ( 'l jS \of F' );
+		if (empty ( $this->cmd ) || count ( $this->cmd ) < 2) {
+			$resultText = "*" . $this->post ["user_name"] . "*: Try this: /<command> daily <what have i done>;<what i will be doing>[;<my current blocks>]";
+		} else {
 			$attachment = $this->createSlackResultAttachment ();
-			$attachment->setTitle ( "attachment title Processing $param" );
-			$attachment->setText ( "attachment text Hello $param !!" );
-			$attachment->setFallback ( "attachment fallback text." );
-			$attachment->setPretext ( "attachment pretext here." );
-			
-			/**
-			 * Adding some fields to the attachment.
-			 */
 			$fields = array ();
-			$fields [] = SlackResultAttachmentField::withAttributes ( "Field 1", "Value" );
-			$fields [] = SlackResultAttachmentField::withAttributes ( "Field 2", "Value" );
-			$fields [] = SlackResultAttachmentField::withAttributes ( "This is a long field", "this is a long Value", FALSE );
+			$fields [] = SlackResultAttachmentField::withAttributes ( "*Done*", $this->cmd [0], FALSE );
+			$fields [] = SlackResultAttachmentField::withAttributes ( "*Doing*", $this->cmd [1], FALSE );
+			$fields [] = SlackResultAttachmentField::withAttributes ( "*Block*", isset ( $this->cmd [2] ) ? $this->cmd [2] : "None", FALSE );
 			$attachment->setFieldsArray ( $fields );
 			
 			$this->addSlackResultAttachment ( $attachment );
