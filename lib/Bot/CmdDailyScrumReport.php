@@ -39,7 +39,7 @@ class CmdDailyScrumReport extends AbstractCommand {
 		$log = $this->log;
 		$log->debug ( "CmdDailyScrumReport: Parameters received: " . implode ( ",", $this->cmd ) );
 		
-		$resultText = "*" . $this->post ["user_name"] . "* daily summary for " . date ( 'l jS \of F' );
+		$resultText = "*" . ucfirst($this->post ["user_name"]) . "* daily summary for " . date ( 'l jS \of F' );
 		if (empty ( $this->cmd ) || count ( $this->cmd ) < 2) {
 			$resultText = "*" . $this->post ["user_name"] . "*: Try this: /<command> daily <what have i done>;<what i will be doing>[;<my current blocks>]";
 		} else {
