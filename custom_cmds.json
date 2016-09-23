@@ -11,6 +11,13 @@
 			"class": "Bot\\CmdTrade",
 			"help_title": "trade",
 			"help_text": "Shows trade classifications for Marc Miller's Traveller T4 RPG"
+		},
+		{
+			"trigger": "daily",
+			"class": "Bot\\CmdDailyScrumReport",
+			"help_title": "daily",
+			"help_text": "formats a daily scrum report with *Done*, *Doing*, *Block*",
+			"split_regexp": "/[;]+/"
 		}
 	]
 }
