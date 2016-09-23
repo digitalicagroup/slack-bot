@@ -3,8 +3,6 @@
 namespace Bot;
 
 use SlackHookFramework\AbstractCommand;
-use SlackHookFramework\SlackResult;
-use SlackHookFramework\SlackResultAttachment;
 
 /**
  * Class to format a Daily Scrum Report.
