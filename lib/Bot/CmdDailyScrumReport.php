@@ -86,6 +86,6 @@ class CmdDailyScrumReport extends AbstractCommand {
 			$this->addSlackResultAttachment ( $attachment );
 		}
 		
-		$this->setText ( $resultText );
+		$this->setResultText ( $resultText );
 	}
 }
