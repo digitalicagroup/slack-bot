@@ -3,11 +3,14 @@
 namespace Bot;
 
 use SlackHookFramework\AbstractCommand;
+use SlackHookFramework\SlackResult;
+use SlackHookFramework\SlackResultAttachment;
+use SlackHookFramework\SlackResultAttachmentField;
 
 /**
  * Class to format a Daily Scrum Report.
  * Usage: /bot daily <done>;<doing>;<block>
- *        /bot daily <done>;<doing>
+ * /bot daily <done>;<doing>
  *
  * @author Luis Augusto Peña Pereira <luis at digitalicagroup dot com>
  *        
@@ -39,11 +42,6 @@ class CmdDailyScrumReport extends AbstractCommand {
 		$log = $this->log;
 		
 		/**
-		 * Create a new instance to store results.
-		 */
-		$result = new SlackResult ();
-		
-		/**
 		 * Output some debug info to log file.
 		 */
 		$log->debug ( "CmdDailyScrumReport: Parameters received: " . implode ( ",", $this->cmd ) );
@@ -51,7 +49,7 @@ class CmdDailyScrumReport extends AbstractCommand {
 		/**
 		 * Preparing the result text and validating parameters.
 		 */
-		$resultText = $this->post ["user_name"] . " daily summary for ".date('l jS \of F Y h:i:s A')."]";
+		$resultText = $this->post ["user_name"] . " daily summary for " . date ( 'l jS \of F Y h:i:s A' ) . "]";
 		if (empty ( $this->cmd )) {
 			$resultText .= " Usage: /<command> daily <what have i done>;<what i will be doing>[;<my current blocks>]";
 		}
@@ -70,11 +68,11 @@ class CmdDailyScrumReport extends AbstractCommand {
 			/**
 			 * Preparing one result attachment for processing this parameter.
 			 */
-			$attachment = new SlackResultAttachment ();
-			$attachment->setTitle ( "Processing $param" );
-			$attachment->setText ( "Hello $param !!" );
-			$attachment->setFallback ( "fallback text." );
-			$attachment->setPretext ( "pretext here." );
+			$attachment = $this->createSlackResultAttachment ();
+			$attachment->setTitle ( "attachment title Processing $param" );
+			$attachment->setText ( "attachment text Hello $param !!" );
+			$attachment->setFallback ( "attachment fallback text." );
+			$attachment->setPretext ( "attachment pretext here." );
 			
 			/**
 			 * Adding some fields to the attachment.
@@ -85,14 +83,9 @@ class CmdDailyScrumReport extends AbstractCommand {
 			$fields [] = SlackResultAttachmentField::withAttributes ( "This is a long field", "this is a long Value", FALSE );
 			$attachment->setFieldsArray ( $fields );
 			
-			/**
-			 * Adding the attachment to the attachments array.
-			 */
-			$attachments [] = $attachment;
+			$this->addSlackResultAttachment ( $attachment );
 		}
 		
-		$result->setText ( $resultText );
-		$result->setAttachmentsArray ( $attachments );
-		return $result;
+		$this->setText ( $resultText );
 	}
 }
