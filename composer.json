@@ -1,27 +1,29 @@
 {
-    "name": "digitalicagroup/slack-bot",
-    "description": "Extendable Utility Bot",
-    "homepage": "https://github.com/digitalicagroup/slack-bot",
-    "type": "project",
-    "require": {
-        "php": ">=5.4",
-        "ext-curl": "*",
-        "katzgrau/klogger": "1.0.*"
-    },
-    "license": "GPL-3.0+",
-    "authors": [
-        {
-            "name": "Luis Augusto Peña Pereira",
-            "email": "luis@digitalicagroup.com"
-        }
-    ],
-    "autoload": {
-      "psr-4": {
-        "Bot\\": "lib/"
-      },
-      "classmap": ["lib/"]
-    },
-    "require-dev": {
-        "digitalicagroup/slack-hook-framework": "dev-unstable"
-    }
+	"name": "digitalicagroup/slack-bot",
+	"description": "Extendable Utility Bot for Slack",
+	"homepage": "https://github.com/digitalicagroup/slack-bot",
+	"type": "project",
+	"require": {
+		"php": ">=5.4",
+		"ext-curl": "*",
+		"katzgrau/klogger": "1.0.*",
+		"digitalicagroup/slack-hook-framework": "~0.3"
+	},
+	"license": "GPL-3.0+",
+	"authors": [
+		{
+			"name": "Luis Augusto Peña Pereira",
+			"email": "luis@digitalicagroup.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Bot\\": "lib/"
+		},
+		"classmap": [
+			"lib/"
+		]
+	},
+	"require-dev": {
+	}
 }

@@ -12,7 +12,7 @@ use SlackHookFramework\SlackResultAttachmentField;
  * Usage: /bot daily <done>;<doing>;<block>
  * /bot daily <done>;<doing>
  *
- * @author Luis Augusto Peña Pereira <luis at digitalicagroup dot com>
+ * @author Luis Augusto PeÃ±a Pereira <luis at digitalicagroup dot com>
  *        
  */
 class CmdDailyScrumReport extends AbstractCommand {
@@ -21,7 +21,8 @@ class CmdDailyScrumReport extends AbstractCommand {
 	 * Factory method to be implemented from \SlackHookFramework\AbstractCommand .
 	 * Must return an instance of \SlackHookFramework\SlackResult .
 	 *
-	 * Basically, the method returns an instance of SlackResult.
+	 * The method should update the protected property instance
+	 * of SlackResult.
 	 * Inside a single instance of SlackResult, several
 	 * SlackResultAttachment instances can be stored.
 	 * Inside a SlackResultAttachment instance, several
@@ -30,29 +31,53 @@ class CmdDailyScrumReport extends AbstractCommand {
 	 * formating guide.
 	 *
 	 * So you must process your command here, and then
-	 * prepare your SlackResult instance.
+	 * prepare your SlackResult instance and attachments with fields.
 	 *
 	 * @see \SlackHookFramework\AbstractCommand::executeImpl()
 	 * @return \SlackHookFramework\SlackResult
 	 */
-	protected function executeImpl() {
+	protected function executeImpl($params) {
 		$log = $this->log;
-		$log->debug ( "CmdDailyScrumReport: Parameters received: " . implode ( ",", $this->cmd ) );
-		
-		$resultText = "*" . ucfirst($this->post ["user_name"]) . "* daily summary for " . date ( 'l jS \of F' );
-		if (empty ( $this->cmd ) || count ( $this->cmd ) < 2) {
+		$log->debug ( "CmdDailyScrumReport: Parameters received: " . implode ( ",", $params ) );
+		$attachments = array ();
+		$resultText = "*" . ucfirst ( $this->post ["user_name"] ) . "* daily summary for " . date ( 'l jS \of F' );
+		if (empty ( $params ) || count ( $params ) < 2) {
 			$resultText = "*" . $this->post ["user_name"] . "*: Try this: /<command> daily <what have i done>;<what i will be doing>[;<my current blocks>]";
 		} else {
-			$attachment = $this->createSlackResultAttachment ();
-			$fields = array ();
-			$fields [] = SlackResultAttachmentField::withAttributes ( "*Done*", $this->cmd [0], FALSE );
-			$fields [] = SlackResultAttachmentField::withAttributes ( "*Doing*", $this->cmd [1], FALSE );
-			$fields [] = SlackResultAttachmentField::withAttributes ( "*Block*", isset ( $this->cmd [2] ) ? $this->cmd [2] : "None", FALSE );
-			$attachment->setFieldsArray ( $fields );
+			$done = $this->createSlackResultAttachment ();
+			$done->setColor ( "good" );
+			$done->setTitle ( "Done" );
+			$done->setFieldsArray ( $this->createFieldsArrayFromText ( "/[.]+/", $params [0] ) );
+			$attachments [] = $done;
 			
-			$this->addSlackResultAttachment ( $attachment );
+			$doing = $this->createSlackResultAttachment ();
+			$doing->setColor ( "warning" );
+			$doing->setTitle ( "Doing" );
+			$doing->setFieldsArray ( $this->createFieldsArrayFromText ( "/[.]+/", $params [1] ) );
+			$attachments [] = $doing;
+			
+			$block = $this->createSlackResultAttachment ();
+			$block->setColor ( "danger" );
+			$block->setTitle ( "Blocks" );
+			if (isset ( $params [2] )) {
+				$block->setFieldsArray ( $this->createFieldsArrayFromText ( "/[.]+/", $params [2] ) );
+			} else {
+				$block->setFieldsArray ( array (
+						SlackResultAttachmentField::withAttributes ( "", "None", FALSE ) 
+				) );
+			}
+			$attachments [] = $block;
 		}
 		
+		$this->setSlackResultAttachments ( $attachments );
 		$this->setResultText ( $resultText );
+	}
+	protected function createFieldsArrayFromText($regexp, $text) {
+		$fields = array ();
+		$list = preg_split ( $regexp, $text );
+		foreach ( $list as $item ) {
+			$fields [] = SlackResultAttachmentField::withAttributes ( "", $item, FALSE );
+		}
+		return $fields;
 	}
 }

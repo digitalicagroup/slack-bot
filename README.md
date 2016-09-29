@@ -1,6 +1,6 @@
 # Slack Bot
 
-A simple bot for Slack. It an be used as a starting point to build your own Slack Bot. This project is also a testing facility for the [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework).
+A simple bot for Slack. It can be used as a starting point to build your own Slack Bot. This project is also a testing facility for the [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework).
 
 Uses
 * One Slack "Slash Commands" and one "Incoming WebHooks" integration (see Install).
@@ -10,17 +10,22 @@ Uses
 How does it work?
 * It installs as a PHP application on your web server.
 * Through a "Slash Commands" Slack integration, it receives requests.
-* Posts the results to an "Incoming WebHooks" Slack integration in the originator's channel or private group (yeah, private group!).
+* It parses the text received, detects which command to use, and forward the parameters.
+* Posts the results to an "Incoming WebHooks" Slack integration in the originator's channel or private group (The framework makes use of slack api to look up channel info).
 
 ## Current Features
 * Commands supported:
- * All slack-hook-framework commands.
+ * All [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework) commands.
+ * daily: Pretty formatter of daily Scrum reports (Done/Doing/Blocks).
  * trade: Get trade classifications for Marc Miller's Traveller T4 RPG
+* Custom commands can be added easily (see Adding more Commands).
+* Custom reg-exp configuration for parameter parsing for each command.
 
 ## Requirements
 
 * PHP >= 5.4 with cURL extension,
 * Slack integrations (see install).
+* [Composer](http://getcomposer.org/download/).
 
 ## Install
 
@@ -37,7 +42,10 @@ How does it work?
  * Webhook URL: copy this URL, we'll need it later.
  * Descriptive Label, Customize Name, Customize Icon: whatever you like.
 
-* Go to [Slack API](https://api.slack.com/) and copy the authentication token for your team.
+* Go to [Slack API](https://api.slack.com/) > "Authentication" > "Tokens for Testing" and generate a test token for your team. The framework needs this because:
+ * When a command is received from Slack (in a private group), the payload does not have the private group name.
+ * It needs to make a request to the Slack API in order to search for the group name.
+ * If the authentication token have the rights to access that group, the framework will be able to post to it.
 
 ### On your web server
 
@@ -56,42 +64,57 @@ Edit index.php and add the following configuration parameters:
 ```php
 /**
  * token sent by slack (from your "Slash Commands" integration).
+ * It is used by the validator to skip command processing if the request
+ * is from an unauthorized slack domain.
  */
-$config->token =              "vuLKJlkjdsflkjLKJLKJlkjd";
+$config->token = "vuLKJlkjdsflkjLKJLKJlkjd";
 
 /**
  * URL of the Incoming WebHook slack integration.
- */ 
-$config->slack_webhook_url =  "https://hooks.slack.com/services/LKJDFKLJFD/DFDFSFDDSFDS/sdlfkjdlkfjLKJLKJKLJO";
+ * Command processing results will be pushed to this URL.
+ */
+$config->slack_webhook_url = "https://hooks.slack.com/services/LKJDFKLJFD/DFDFSFDDSFDS/sdlfkjdlkfjLKJLKJKLJO";
 
 /**
- * Slack API authentication token for your team.
+ * Slack API authentication testing token for your team.
+ * We have not implemented an "Add to Slack" button yet, so a testing token
+ * must be used in the meantime.
+ * See README.md for instructions on how to get a testing token from slack.
  */
-$config->slack_api_token =    "xoxp-98475983759834-38475984579843-34985793845";
+$config->slack_api_token = "xoxp-98475983759834-38475984579843-34985793845";
 
 /**
- * Log level threshold. The default is DEBUG.
- * If you are done testing or installing in production environment,
- * uncomment this line.
+ * Log level threshold.
+ * The default is DEBUG.
+ * 
+ * Available levels:
+ * LogLevel::EMERGENCY;
+ * LogLevel::ALERT;
+ * LogLevel::CRITICAL;
+ * LogLevel::ERROR;
+ * LogLevel::WARNING;
+ * LogLevel::NOTICE;
+ * LogLevel::INFO;
+ * LogLevel::DEBUG;
  */
-//$config->log_level =           LogLevel::WARNING;
+$config->log_level = LogLevel::DEBUG;
 
 /**
- * logs folder, make sure the invoker have write permission.
+ * logs folder, make sure the invoker(*) have write permission.
  */
-$config->log_dir =            "/srv/api/slack-bot/logs";
+$config->log_dir = __DIR__."/logs";
 
 /**
  * Database folder, used by some commands to store user related temporal information.
- * Make sure the invoker have write permission.
+ * Make sure the invoker(*) have write permission.
  */
-$config->db_dir = "/srv/api/slack-bot/db";
+$config->db_dir = __DIR__."/db";
 
 /**
  * Custom commands definition. Use this file if you wish to add new commands to be
  * recognized by the framework.
  */
-$config->custom_cmds = "/srv/api/slack-bot/custom_cmds.json";
+$config->custom_cmds = __DIR__."/custom_cmds.json";
 ```
 
 Give permissions to your logs/ and db/ folder to your web server process. If you are using apache under linux, it is usually www-data:
@@ -117,8 +140,8 @@ This is a list of common errors:
  * Check in the app log for the strings "[DEBUG] Util: group found!" or "[DEBUG] Util: channel found!" . If you can't see those strings, check if your slack authentication token for your team is from an user that have access to the private group you are writing from. 
 * I just developed a new command but I am getting a class not found error on CommandFactory.
  * Every time you add a new command (hence a new class), you must update the composer autoloader. just type:
- * php composer.phar update  
-* If you have any bug or error to report, feel free to contact me:  luis at digitalicagroup.com
+ * `php composer.phar update` 
+* If you have any bug or error to report, feel free to contact me:  luis at digitalicagroup dot com
 
 ## Adding more Commands.
 
@@ -140,101 +163,20 @@ use SlackHookFramework\SlackResultAttachment;
 use SlackHookFramework\SlackResultAttachmentField;
 
 class CmdPing extends AbstractCommand {
-	
-	/**
-	 * Factory method to be implemented from \SlackHookFramework\AbstractCommand .
-	 * Must return an instance of \SlackHookFramework\SlackResult .
-	 *
-	 * Basically, the method returns an instance of SlackResult.
-	 * Inside a single instance of SlackResult, several
-	 * SlackResultAttachment instances can be stored.
-	 * Inside a SlackResultAttachment instance, several
-	 * SlackResultAttachmentField instances can be stored.
-	 * The result is then formating according to the Slack
-	 * formating guide.
-	 *
-	 * So you must process your command here, and then
-	 * prepare your SlackResult instance.
-	 */
-	protected function executeImpl() {
-		/**
-		 * Get a reference to the log.
-		 */
-		$log = $this->log;
-		
-		/**
-		 * Create a new instance to store results.
-		 */
-		$result = new SlackResult ();
-		
-		/**
-		 * Output some debug info to log file.
-		 */
-		$log->debug ( "CmdPing: Parameters received: " . implode ( ",", $this->cmd ) );
-		
-		/**
-		 * Preparing the result text and validating parameters.
-		 */
-		$resultText = "[requested by " . $this->post ["user_name"] . "]";
-		if (empty ( $this->cmd )) {
-			$resultText .= " You must specify at least one parameter!";
-		} else {
-			$resultText .= " CmdPing Result: ";
-		}
-		
-		/**
-		 * Preparing attachments.
-		 */
-		$attachments = array ();
-		
-		/**
-		 * Cycling through parameters, just for fun.
-		 */
-		foreach ( $this->cmd as $param ) {
-			$log->debug ( "CmdPing: processing parameter $param" );
-			
-			/**
-			 * Preparing one result attachment for processing this parameter.
-			 */
-			$attachment = new SlackResultAttachment ();
-			$attachment->setTitle ( "Processing $param" );
-			$attachment->setText ( "Ping $param !!" );
-			$attachment->setFallback ( "fallback text." );
-			/**
-			 * Optional pretext
-			 */
-			$attachment->setPretext ( "pretext here." );
-			
-			/**
-			 * Adding some fields to the attachment.
-			 */
-			$fields = array ();
-			$fields [] = SlackResultAttachmentField::withAttributes ( "Field 1", "Value" );
-			$fields [] = SlackResultAttachmentField::withAttributes ( "Field 2", "Value" );
-			$fields [] = SlackResultAttachmentField::withAttributes ( "This is a long field", "this is a long Value", FALSE );
-			$attachment->setFieldsArray ( $fields );
-			
-			/**
-			 * Adding the attachment to the attachments array.
-			 */
-			$attachments [] = $attachment;
-		}
-		
-		$result->setText ( $resultText );
-		$result->setAttachmentsArray ( $attachments );
-		return $result;
+	protected function executeImpl($params) {
+		$this->setResultText ( "PONG!" );
 	}
 }
 ```
 
-Now go to slack-bot's install folder and edit the custom_cmds.json file and add a command definition for CmdPing:
+Now go to slack-bot's install folder, edit the custom_cmds.json file and add a command definition for CmdPing:
 ```json
 {
 	"commands": [
 		{
 			"trigger": "ping",
 			"class": "Bot\\CmdPing",
-			"help_title": "ping <1 2 ...>",
+			"help_title": "ping",
 			"help_text": "example command."
 		},
      . . .
@@ -247,12 +189,15 @@ Go to the slack-bot install dir and run:
 $ php composer.phar update
 ```
 
+Check the contents of `vendor/digitalicagroup/slack-hook-framework/lib/SlackHookFramework/CmdHello.php` from [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework) for detailed return options.
+
 ## Feedback
 
 Feel free to reach us at: contact at digitalicagroup dot com .
 
 ## About Digitalica
 
-We are a small firm focusing on mobile apps development (iOS, Android) and we are passionate about new technologies and ways that helps us work better.
-* This project homepage: [slack-bot](https://github.com/digitalicagroup/slack-bot)
+We are a small firm focusing on mobile apps development (iOS, Android) and we are passionate about new technologies and ways that helps us work better. This project is an extension of our work to test and play with new things.
+* This project homepage: [slack-bot](https://github.com/digitalicagroup/slack-hook)
 * Digitalica homepage: [digitalicagroup.com](http://digitalicagroup.com)
+* Our Engineering Team Blog: [blog.digitalicagroup.com](http://blog.digitalicagroup.com)

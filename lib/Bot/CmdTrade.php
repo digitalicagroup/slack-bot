@@ -11,7 +11,7 @@ use SlackHookFramework\SlackResultAttachmentField;
  * Command to find trade classifications for
  * Marc Miller's Traveller T4 RPG.
  *
- * @author Luis Augusto Peña Pereira <luis at digitalicagroup dot com>
+ * @author Luis Augusto PeÃ±a Pereira <luis at digitalicagroup dot com>
  *        
  */
 class CmdTrade extends AbstractCommand {
@@ -57,13 +57,10 @@ class CmdTrade extends AbstractCommand {
 	/**
 	 * Factory method to be implemented from \Bot\AbstractCommand .
 	 *
-	 *
-	 * Must return an instance of \Bot\SlackResult .
-	 *
 	 * @see \Bot\AbstractCommand::executeImpl()
 	 * @return \Bot\SlackResult
 	 */
-	protected function executeImpl() {
+	protected function executeImpl($params) {
 		$log = $this->log;
 		$result = new SlackResult ();
 		
@@ -110,7 +107,7 @@ class CmdTrade extends AbstractCommand {
 		
 		$result->setText ( $resultText );
 		$result->setAttachmentsArray ( $attachments );
-		return $result;
+		$this->result = $result;
 	}
 	protected function print_uwp($uwp) {
 		if (isset ( $uwp [8] )) {
@@ -539,6 +536,6 @@ class CmdTrade extends AbstractCommand {
 			$result += $aux;
 			$this->log->debug ( "CmdTrade: market $result , mods: $mods , tlmod: $tlmod" );
 		}
-		return $result;
+		$this->result = $result;
 	}
 }
