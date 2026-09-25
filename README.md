@@ -1,3 +1,7 @@
+> [!WARNING]
+> ### 🛑 This Repository is Archived
+> This project has been **archived** and is now in a **read-only state**. It is no longer actively maintained, and we are not accepting issues or pull requests. 
+
 # Slack Bot
 
 A simple bot for Slack. It can be used as a starting point to build your own Slack Bot. This project is also a testing facility for the [slack-hook-framework](https://github.com/digitalicagroup/slack-hook-framework).
